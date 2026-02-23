@@ -1,0 +1,85 @@
+# --------------------------------------------------------------------------
+# TOML geometry input file
+# ========================
+# Reference to learn TOML: https://learnxinyminutes.com/docs/toml/
+# --------------------------------------------------------------------------
+
+name      = 'SpaceTelescope'
+
+# --------------------------------------------------------------------------
+# Telescope geometry, table
+# --------------------------------------------------------------------------
+[ Geometry ]
+#type      = 0               # [-] 1 if beam, 0 if rod structure is selected
+
+R         = 2400             # [mm] Radius of the telescope dish
+cl        = 600              # [mm] Clearance of telescope with base plate
+b         = 700              # [mm] Base of standing legs telescope
+phi       = 30               # [deg] opening angle of dish
+
+sym       = 1                # [-] condition for whether to make only half a telescope or whole (symmetrical)
+deltaT    = 250             # [-] change in temperature
+
+seeds     = 8                # [-] results in n + 2 nodes per part
+lump_mass = 1                # [-] 1 if lumped mass matrix is to be used, 0 if full mass matrix is to be used (only for rod structure)
+
+# --------------------------------------------------------------------------
+# Section properties, array of tables
+# --------------------------------------------------------------------------
+[[ Sections ]]
+A = 108.16                   # [mm^2]
+I = 974.882                  # [mm^4]
+
+[[ Sections ]]
+A = 400                      # [mm^2]
+I = 8000000                  # [mm^4]
+
+[[ Sections ]]
+A = 500                      # [mm^2]
+I = 250000                   # [mm^4]
+
+# --------------------------------------------------------------------------
+# Specify part properties 
+# Note: if symmetry is applied, part properties are mirrored automatically!
+# --------------------------------------------------------------------------
+
+[ PartProperties ]                          #[[beam parameters],[rod parameters]]
+materials = [[2, 2, 2, 1] ,
+    [2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2]]     # index of material in materials dictionary
+sections  = [[1, 1, 0, 2] ,
+    [1, 1, 0, 2, 1, 1, 0, 2, 1, 1, 0]]    # index of section in secion list above
+
+
+#
+#[[ PartProperties ]]
+#materials = [2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2]      # index of material in materials dictionary
+#sections  = [1, 1, 0, 2, 1, 1, 0, 2, 1, 1, 0]      # index of section in secion list above
+
+# --------------------------------------------------------------------------
+# Applied forces
+# --------------------------------------------------------------------------
+[[ Forces ]]
+point     = 1                # [-]
+axis      = 1                # 0 for force along x axis, 1 for force along y
+magnitude = -1000            # [N]
+
+#[[ Forces ]]
+#point     = 1                # [-]
+#axis      = 1                # 0 for force along x axis, 1 for force along y
+#magnitude = -1000000            # [N]
+
+# --------------------------------------------------------------------------
+# Boundary conditions
+# Note: specify the DOFs that are fixed only! By default, DOF is free
+# --------------------------------------------------------------------------
+[[ BoundaryConditions ]]
+point = 5
+DOF = [1, 1, 1]
+
+# --------------------------------------------------------------------------
+# Output settings
+# --------------------------------------------------------------------------
+[ Output ]
+
+nFreq      = 5               # [-] number of eigenfrequencies displayed
+plot_scale = 1               # [-] displacement plot scale
